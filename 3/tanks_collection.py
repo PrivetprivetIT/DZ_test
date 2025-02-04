@@ -2,7 +2,7 @@ from tkinter import NW
 from random import randint
 from units import Tank
 import world
-from missiles_collection import check_missiles_collection
+from missiles_collection import check_missiles_collection, check_rockets_collection
 
 _tanks = []
 
@@ -43,6 +43,7 @@ def update():
             _tanks[i].update()
             check_collision(_tanks[i])
             check_missiles_collection(_tanks[i])
+            check_rockets_collection(_tanks[i])
 
 def check_collision(tank):
     for other_tank in _tanks:
