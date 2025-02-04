@@ -335,12 +335,12 @@ class Missile(Unit):
 
 class Rocket(Unit):
     def __init__(self, canvas, owner):
-        super().__init__(canvas, owner.get_x(), owner.get_y(), 6, 20, False, 'missile_up')
+        super().__init__(canvas, owner.get_x(), owner.get_y(), 6, 5, False, 'missile_up')
 
-        self._forward_image = 'missile_up'
-        self._backward_image = 'missile_down'
-        self._left_image = 'missile_left'
-        self._right_image = 'missile_right'
+        self._forward_image = 'rocket_up'
+        self._backward_image = 'rocket_down'
+        self._left_image = 'rocket_left'
+        self._right_image = 'rocket_right'
         self._owner = owner
 
 
