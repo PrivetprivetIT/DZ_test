@@ -1,12 +1,9 @@
-
 import texture as skin
 import world
 from hitbox import Hitbox
 from tkinter import NW
 from random import randint
 import missiles_collection
-
-
 
 class Unit:
     def __init__(self, canvas, x, y, speed, padding, bot, default_image):
@@ -179,6 +176,7 @@ class Tank(Unit):
 
         self.forward()
         self._ammo = 80
+        self._nuclear_ammo = 5
         self._usual_speed = self._speed
         self._water_speed = self._speed // 2
         self._target = None
@@ -216,13 +214,25 @@ class Tank(Unit):
             self._ammo -= 1
             missiles_collection.fire(self)
 
+    def nuclear_boom(self):
+        if self._nuclear_ammo > 0:
+            self._nuclear_ammo -= 1
+            missiles_collection.nuclear_boom(self)
+
     def _take_ammo(self):
         self._ammo += 10
         if self._ammo > 100:
             self._ammo = 100
 
+        if randint(1, 5) == 1:
+            self._nuclear_ammo += 1
+
+
     def get_ammo(self):
         return self._ammo
+
+    def get_nuclear_ammo(self):
+        return self._nuclear_ammo
 
     def _set_usual_speed(self):
         self._speed = self._usual_speed
@@ -323,4 +333,43 @@ class Missile(Unit):
 
 
 
+class Rocket(Unit):
+    def __init__(self, canvas, owner):
+        super().__init__(canvas, owner.get_x(), owner.get_y(), 6, 20, False, 'missile_up')
 
+        self._forward_image = 'missile_up'
+        self._backward_image = 'missile_down'
+        self._left_image = 'missile_left'
+        self._right_image = 'missile_right'
+        self._owner = owner
+
+
+
+        if owner.get_vx() == 1 and owner.get_vy() == 0:
+            self.right()
+        elif owner.get_vx() == -1 and owner.get_vy() == 0:
+            self.left()
+        elif owner.get_vx() == 0 and owner.get_vy() == -1:
+            self.forward()
+        elif owner.get_vx() == 0 and owner.get_vy() == 1:
+            self.backward()
+
+        self._x += owner.get_vx() * self.get_size() // 2
+        self._y += owner.get_vy() * self.get_size() // 2
+
+        self._hitbox.set_blacklist([world.CONCRETE, world.BRICK])
+
+    def get_owner(self):
+        return self._owner
+
+    def _on_map_collision(self, details):
+        if world.BRICK in details:
+            row = details[world.BRICK]['row']
+            col = details[world.BRICK]['col']
+            world.destroy(row, col)
+            self.destroy()
+        if world.CONCRETE in details:
+            row1 = details[world.CONCRETE]['row']
+            col1 = details[world.CONCRETE]['col']
+            world.destroy(row1, col1)
+            self.destroy()

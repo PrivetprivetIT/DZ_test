@@ -14,12 +14,14 @@ KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN = 37, 39, 38, 40
 
 SPACE = 32
 ENTER = 13
+E = 69
 
 FPS = 60
 
 def update():
     tanks_collection.update()
     missiles_collection.update()
+    missiles_collection.update_nuclear()
 
     player = tanks_collection.get_player()
 
@@ -58,6 +60,8 @@ def key_press(event):
         tanks_collection.spawn()
     elif event.keycode == SPACE:
         player.fire()
+    elif event.keycode == E:
+        player.nuclear_boom()
 
 def load_textures():
     texture.load('tank_up', '../img/tank_up.png')

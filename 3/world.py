@@ -41,9 +41,9 @@ def load_map(file_name):
 def initialaze(canv):
     global _canvas, _map
     _canvas = canv
-    #create_map(20, 20)
+    create_map(20, 20)
     #load_map('../map/1.tmap')
-    load_map('../map/2.tmap')
+    #load_map('../map/2.tmap')
     #load_map('../map/3.tmap')
 
 def create_map(rows = 20, cols = 20):
@@ -182,7 +182,13 @@ class _Cell:
             return AIR
 
     def destroy(self):
-        if self.get_block() == BRICK:
+        if self.get_block() == BRICK or self.get_block() == CONCRETE:
+            self.set_block(GROUND)
+            return True
+        return False
+
+    def destroy_all(self):
+        if self.get_block() == BRICK or self.get_block() == CONCRETE:
             self.set_block(GROUND)
             return True
         return False
