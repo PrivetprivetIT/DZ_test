@@ -1,7 +1,7 @@
 import texture as skin
 import world
 from hitbox import Hitbox
-from tkinter import NW
+from tkinter import *
 from random import randint
 import weapons_collection
 
@@ -14,10 +14,11 @@ class Unit:
         self._vy = 0
         self._canvas = canvas
         self._hp = 100
+        self._max_hp = 100
         self._dx = 0
         self._dy = 0
         self._bot = bot
-        self._hitbox = Hitbox(x, y, world.BLOCK_SIZE, world. BLOCK_SIZE, padding = padding)
+        self._hitbox = Hitbox(x, y, world.BLOCK_SIZE, world.BLOCK_SIZE, padding=padding)
         self._default_image = default_image
         self._left_image = default_image
         self._right_image = default_image
@@ -28,10 +29,10 @@ class Unit:
 
         self._destroyed = False
 
-
     def damage(self, value):
         self._hp -= value
-        if self._hp < 0:
+        if self._hp <= 0:
+            self._hp = 0
             self.destroy()
 
     def is_destroyed(self):
@@ -42,10 +43,12 @@ class Unit:
         self.stop()
         self._speed = 0
 
+
     def _create(self):
         self._id = self._canvas.create_image(self._x, self._y,
-                                             image = skin.get(self._default_image),
-                                             anchor = NW)
+                                             image=skin.get(self._default_image),
+                                             anchor=NW)
+
 
     def __del__(self):
         try:
@@ -56,19 +59,22 @@ class Unit:
     def forward(self):
         self._vx = 0
         self._vy = -1
-        self._canvas.itemconfig(self._id, image = skin.get(self._forward_image))
+        self._canvas.itemconfig(self._id, image=skin.get(self._forward_image))
+
     def backward(self):
         self._vx = 0
         self._vy = 1
-        self._canvas.itemconfig(self._id, image = skin.get(self._backward_image))
+        self._canvas.itemconfig(self._id, image=skin.get(self._backward_image))
+
     def left(self):
         self._vx = -1
         self._vy = 0
-        self._canvas.itemconfig(self._id, image = skin.get(self._left_image))
+        self._canvas.itemconfig(self._id, image=skin.get(self._left_image))
+
     def right(self):
         self._vx = 1
         self._vy = 0
-        self._canvas.itemconfig(self._id, image = skin.get(self._right_image))
+        self._canvas.itemconfig(self._id, image=skin.get(self._right_image))
 
     def stop(self):
         self._vx = 0
@@ -108,7 +114,8 @@ class Unit:
     def _repaint(self):
         screen_x = world.get_screen_x(self._x)
         screen_y = world.get_screen_y(self._y)
-        self._canvas.moveto(self._id, x = screen_x, y = screen_y)
+        self._canvas.moveto(self._id, x=screen_x, y=screen_y)
+
 
     def _undo_move(self):
         if self._dx == 0 and self._dy == 0:
@@ -142,21 +149,27 @@ class Unit:
 
     def get_hp(self):
         return self._hp
+
     def get_speed(self):
         return self._speed
+
     def get_x(self):
         return self._x
+
     def get_y(self):
         return self._y
+
     def get_vx(self):
         return self._vx
+
     def get_vy(self):
         return self._vy
+
     def get_size(self):
         return world.BLOCK_SIZE
+
     def is_bot(self):
         return self._bot
-
 
 class Tank(Unit):
     def __init__(self, canvas, row, col, bot = True):
@@ -181,6 +194,40 @@ class Tank(Unit):
         self._water_speed = self._speed // 2
         self._target = None
 
+        self._create_hp_bar()
+
+    def _create_hp_bar(self):
+        self._hp_bar_background = self._canvas.create_rectangle(
+            self._x, self._y - 10, self._x + world.BLOCK_SIZE, self._y - 5,
+            fill="gray", outline="black"
+        )
+        self._hp_bar = self._canvas.create_rectangle(
+            self._x, self._y - 10, self._x + world.BLOCK_SIZE, self._y - 5,
+            fill="red", outline=""
+        )
+
+        self._update_hp_bar()
+
+    def _update_hp_bar(self):
+        screen_x = world.get_screen_x(self._x)
+        screen_y = world.get_screen_y(self._y)
+        self._canvas.coords(self._hp_bar, screen_x, screen_y - 10,
+                            screen_x + (world.BLOCK_SIZE * (self._hp / self._max_hp)), screen_y - 5)
+        self._canvas.coords(self._hp_bar_background, screen_x, screen_y - 10, screen_x + world.BLOCK_SIZE, screen_y - 5)
+
+    def _repaint(self):
+        super()._repaint()
+        self._update_hp_bar()
+
+    def destroy(self):
+        super().destroy()
+        self._canvas.delete(self._hp_bar_background)
+        self._canvas.delete(self._hp_bar)
+
+
+    def damage(self, value):
+        super().damage(value)
+        self._update_hp_bar()
 
     def set_target(self, target):
         self._target = target
@@ -302,7 +349,6 @@ class Missile(Unit):
         self._left_image = 'missile_left'
         self._right_image = 'missile_right'
         self._owner = owner
-
 
 
         if owner.get_vx() == 1 and owner.get_vy() == 0:

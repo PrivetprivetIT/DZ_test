@@ -47,5 +47,5 @@ def check_rockets_collection(tank):
             continue
         if rocket.intersects(tank):
             rocket.destroy()
-            tank.damage(200)
+            tank.damage(100)
             return
