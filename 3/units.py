@@ -25,6 +25,7 @@ class Unit:
         self._forward_image = default_image
         self._backward_image = default_image
 
+
         self._create()
 
         self._destroyed = False
@@ -42,7 +43,6 @@ class Unit:
         self._destroyed = True
         self.stop()
         self._speed = 0
-
 
     def _create(self):
         self._id = self._canvas.create_image(self._x, self._y,
@@ -186,7 +186,6 @@ class Tank(Unit):
             self._left_image = 'tank_left_player'
             self._right_image = 'tank_right_player'
 
-
         self.forward()
         self._ammo = 80
         self._nuclear_ammo = 5
@@ -223,7 +222,6 @@ class Tank(Unit):
         super().destroy()
         self._canvas.delete(self._hp_bar_background)
         self._canvas.delete(self._hp_bar)
-
 
     def damage(self, value):
         super().damage(value)
