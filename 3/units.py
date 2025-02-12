@@ -3,7 +3,7 @@ import world
 from hitbox import Hitbox
 from tkinter import NW
 from random import randint
-import missiles_collection
+import weapons_collection
 
 class Unit:
     def __init__(self, canvas, x, y, speed, padding, bot, default_image):
@@ -212,12 +212,12 @@ class Tank(Unit):
     def fire(self):
         if self._ammo > 0:
             self._ammo -= 1
-            missiles_collection.fire(self)
+            weapons_collection.fire(self)
 
     def nuclear_boom(self):
         if self._nuclear_ammo > 0:
             self._nuclear_ammo -= 1
-            missiles_collection.nuclear_boom(self)
+            weapons_collection.nuclear_boom(self)
 
     def _take_ammo(self):
         self._ammo += 10

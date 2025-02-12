@@ -1,4 +1,4 @@
-import missiles_collection
+import weapons_collection
 from tkinter import*
 import world
 import tanks_collection
@@ -20,8 +20,8 @@ FPS = 60
 
 def update():
     tanks_collection.update()
-    missiles_collection.update()
-    missiles_collection.update_nuclear()
+    weapons_collection.update()
+    weapons_collection.update_nuclear()
 
     player = tanks_collection.get_player()
 
@@ -103,7 +103,7 @@ canv.pack()
 world.initialaze(canv)
 
 tanks_collection.initialize(canv)
-missiles_collection.initialize(canv)
+weapons_collection.initialize(canv)
 
 w.bind('<KeyPress>', key_press)
 

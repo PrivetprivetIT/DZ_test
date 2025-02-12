@@ -2,7 +2,7 @@ from tkinter import NW
 from random import randint
 from units import Tank
 import world
-from missiles_collection import check_missiles_collection, check_rockets_collection
+from weapons_collection import check_missiles_collection, check_rockets_collection
 
 _tanks = []
 
