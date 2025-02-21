@@ -1,7 +1,7 @@
-from units import Missile, Rocket
+from units import Missile, NuclearBomb
 
 _missiles = []
-_rockets = []
+_nuclear_bombs = []
 _canvas = None
 
 def initialize(canv):
@@ -13,8 +13,8 @@ def fire(owner):
     _missiles.append(m)
 
 def nuclear_boom(owner):
-    r = Rocket(_canvas, owner)
-    _rockets.append(r)
+    b = NuclearBomb(_canvas, owner)
+    _nuclear_bombs.append(b)
 
 def update():
     start = len(_missiles) - 1
@@ -25,12 +25,12 @@ def update():
             _missiles[i].update()
 
 def update_nuclear():
-    start = len(_rockets) - 1
+    start = len(_nuclear_bombs) - 1
     for i in range(start, -1, -1):
-        if _rockets[i].is_destroyed():
-            del _rockets[i]
+        if _nuclear_bombs[i].is_destroyed():
+            del _nuclear_bombs[i]
         else:
-            _rockets[i].update()
+            _nuclear_bombs[i].update()
 
 def check_missiles_collection(tank):
     for missile in _missiles:
@@ -41,11 +41,11 @@ def check_missiles_collection(tank):
             tank.damage(25)
             return
 
-def check_rockets_collection(tank):
-    for rocket in _rockets:
-        if rocket.get_owner() == tank:
+def check_nuclear_bomb_collection(tank):
+    for nuclear_bomb in _nuclear_bombs:
+        if nuclear_bomb.get_owner() == tank:
             continue
-        if rocket.intersects(tank):
-            rocket.destroy()
+        if nuclear_bomb.intersects(tank):
+            nuclear_bomb.destroy()
             tank.damage(100)
             return
